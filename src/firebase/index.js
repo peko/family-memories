@@ -1,7 +1,7 @@
 import firebaseConfig from './config'
 import {initializeApp} from 'firebase/app'
 // import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc} from 'firebase/firestore';
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, serverTimestamp} from 'firebase/firestore';
 // import { getAuth, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import * as auth from 'firebase/auth';
 
@@ -65,6 +65,22 @@ function signin(email, pass) {
   });
 }
 
+function addVideo(video) {
+    let uid = auth.getAuth().currentUser.uid;
+    video.created = video.updated = serverTimestamp();
+    let doc_ref = doc(db,"users", uid, "videos", video.id);
+    return setDoc(doc_ref, video);
+}
+
+function getVideos() {
+    let uid = auth.getAuth().currentUser.uid;
+    return getDocs(collection(db,`users/${uid}/videos`))
+    .then((snapshot)=>{
+        let res = [];
+        snapshot.forEach((doc)=>res.push(doc.data()))
+        return res;
+    });
+}
 function logout() {
   return auth.signOut(auth.getAuth())
   .then( () => {
@@ -88,5 +104,5 @@ export const useUserProduct = () => {
 
 export {
   login, signin, logout,
-  db, collection, getDocs, userName, userUid
+  db, collection, getDocs, userName, userUid, addVideo, getVideos
 }

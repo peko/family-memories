@@ -25,7 +25,7 @@
 
 <script>
 
-import { userUid } from "../firebase"
+import { userUid, addVideo } from "../firebase"
 import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import Recorder from "recordrtc";
 import poster from "../assets/images/video-camera.png";
@@ -84,6 +84,7 @@ export default {
             
             this.uploadVideo(recorder.getBlob());
             this.destroyRecorder();
+            
             // console.log('BLOB', recorder.getBlob())
             // var recordedBlob = recorder.getBlob();
             // recorder.getDataURL(function (dataURL) { });
@@ -134,12 +135,22 @@ export default {
             const storage = getStorage();
             const storageRef = ref(storage, `${this.filename}.webm`);
 
-            uploadBytes(storageRef, blob).then((snapshot) => {
+            uploadBytes(storageRef, blob)
+            .then((snapshot) => {
                 this.uploading = false;
                 this.recording = false;
                 this.recorded = true;
                 console.log('Uploaded a blob or file!', snapshot);
+                return getDownloadURL(snapshot.ref)
+            }).then((videoUrl)=>{
+                console.log("Video URL", videoUrl);
+                return addVideo({
+                    id: this.filename.split('/')[1],
+                    thumbnailUrl: this.thumbnailUrl,
+                    videoUrl: videoUrl
+                })
             });
+
         },
 
         makeScreenshot() {

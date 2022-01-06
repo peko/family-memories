@@ -4,7 +4,7 @@
         <v-img
           class="white--text align-end"
           height="200px"
-          src="../assets/images/video-camera.png"
+          :src="video.thumbnailUrl"
           >
           <!-- v-card-title>Video title</v-card-title -->
         </v-img>
@@ -14,7 +14,7 @@
         </v-card-subtitle>
 
         <v-card-text class="text--primary">
-          <div>Tags</div>
+          <!-- div>{{video}}</div-->
           <div>Description</div>
         </v-card-text>
 
@@ -36,6 +36,12 @@ export default {
   components: {
   },
 
+  props: {
+      video: {
+          type: Object,
+          default: ()=>({})
+      }
+  },
   data: () => ({
       thumb
   }),

@@ -6,15 +6,7 @@
       </v-col> 
     </v-row>
     <v-row>
-        <VideoCard />
-        <VideoCard />
-        <VideoCard />
-        <VideoCard />
-        <VideoCard />
-        <VideoCard />
-        <VideoCard />
-        <VideoCard />
-        <VideoCard />
+        <VideoCard v-for="video in videos" :key="video.id" :video="video" />
     </v-row>
   </v-container>
 </template>
@@ -22,6 +14,7 @@
 <script>
 
 import VideoCard from "../components/VideoCard"
+import { getVideos } from "../firebase"
 
 export default {
   name: 'AllMemories',
@@ -31,8 +24,12 @@ export default {
   },
 
   data: () => ({
-    //
+    videos:[]
   }),
+  mounted() {
+     getVideos()
+     .then((videos)=>this.videos = videos)
+  }
 };
 </script>
 
