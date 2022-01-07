@@ -1,6 +1,27 @@
 <template>
-  <v-container class="bg" fluid>
-    <v-dialog
+  <v-container class="bg" fluid style="padding:40px;">
+    <v-row>
+        <v-col cols=12 class="text-right">
+            <v-btn color="primary" class="mr-4" text>about us</v-btn>
+            <v-btn color="primary" @click="loginGoogle()">login</v-btn>
+        </v-col>
+    </v-row>
+
+    <v-row style="margin-top: 80px">
+        <v-col cols=12 class="text-right">
+            <p class="text-h3" style="color: white !important;">Family memories</p>
+        </v-col>
+    </v-row>
+    
+    <v-row style="margin-top: 80px" justify="end">
+        <v-col cols=4 class="text-right">
+            <p style="color: white !important;">
+                We provide an easy way to get the family stories from the whole family and store them securely in an organised way.
+            </p>
+        </v-col>
+    </v-row>
+    
+    <!-- v-dialog
       v-model="dialog"
       persistent
       max-width="390">
@@ -47,7 +68,7 @@
           <v-btn @click="login(email,pass)">login</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog -->
   </v-container>
 </template>
 
@@ -62,7 +83,7 @@ export default {
   data: ()=>({
     error: false,
     errorText: "Error",
-    dialog: true,
+    dialog: false,
     valid:true,
     email:"",
     show: false,

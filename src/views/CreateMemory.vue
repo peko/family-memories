@@ -28,7 +28,7 @@
         
         <v-col>
             <v-combobox
-                v-model="cb1"
+                v-model="stage"
                 :items="items1"
                 label="Stage"
                 outlined
@@ -38,7 +38,7 @@
 
         <v-col>
             <v-combobox
-                v-model="cb2"
+                v-model="focuson"
                 :items="items2"
                 label="Focus on"
                 outlined
@@ -48,7 +48,7 @@
 
         <v-col>
             <v-combobox
-                v-model="cb3"
+                v-model="mood"
                 :items="items3"
                 label="Mood"
                 outlined
@@ -58,13 +58,15 @@
 
         <v-col cols="2">
           <v-text-field
+              v-model="yearfrom"
               hide-details
               dense
               outlined
-              label="years from"/>
+              label="year from"/>
         </v-col>
         <v-col cols="2">
           <v-text-field
+              v-model="yearto"
               hide-details
               dense
               outlined
@@ -86,7 +88,13 @@
       </v-tabs>
       <v-row>
           <v-col>
-              <VideoRecorder />
+              <VideoRecorder
+                  :question="question"
+                  :stage="stage"
+                  :focuson="focuson"
+                  :mood="mood"
+                  :yearfrom="yearfrom"
+                  :yearto="yearto"/>
           </v-col>
       </v-row>
   </v-container>
@@ -118,7 +126,7 @@ export default {
          "Univercity",
          "Wedding"
      ],
-     cb1:"Stage",
+     stage: "Stage",
      question: questions[qid],
      items2: [
          "Focus on",
@@ -127,7 +135,7 @@ export default {
          "Family Member 2",
          "Label"
      ],
-     cb2: "Focus on",
+     focuson: "Focus on",
      
      items3: [
          "Mood",
@@ -136,7 +144,9 @@ export default {
          "Excited",
          "Sad",
      ],
-     cb3: "Mood",
+     mood: "Mood",
+     yearfrom:"",
+     yearto:""
   }),
   methods: {
      nextQuestion() {

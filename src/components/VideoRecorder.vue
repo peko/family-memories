@@ -39,6 +39,15 @@ export default {
     components: {
     },
 
+    props: [
+        "question",
+        "stage",
+        "focuson",
+        "mood",
+        "yearfrom",
+        "yearto",
+    ],
+    
     data: () => ({
         poster,
         recorded: false,
@@ -59,7 +68,9 @@ export default {
 
             var options = {
                 mimeType: 'video/webm;codecs=vp9,opus',
-                bitsPerSecond: 128000,
+                //videoBitsPerSecond: 51200000,
+                videoBitsPerSecond: 5120000,
+                audioBitsPerSecond: 128000,
                 timeSlice:1000,
             };
             
@@ -137,17 +148,23 @@ export default {
 
             uploadBytes(storageRef, blob)
             .then((snapshot) => {
+                console.log("Video uploaded")
                 this.uploading = false;
                 this.recording = false;
                 this.recorded = true;
-                console.log('Uploaded a blob or file!', snapshot);
                 return getDownloadURL(snapshot.ref)
             }).then((videoUrl)=>{
-                console.log("Video URL", videoUrl);
+                console.log(videoUrl);
                 return addVideo({
                     id: this.filename.split('/')[1],
                     thumbnailUrl: this.thumbnailUrl,
-                    videoUrl: videoUrl
+                    videoUrl: videoUrl,
+                    question: this.question,
+                    stage:    this.stage,
+                    focuson:  this.focuson,
+                    mood:     this.mood,
+                    yearfrom: this.yearfrom,
+                    yearto:   this.yearto,
                 })
             });
 

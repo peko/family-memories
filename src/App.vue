@@ -1,6 +1,6 @@
 <template>
   <v-app class="bg">
-    <AppBar />
+    <AppBar v-if="$route.meta && $route.meta.requiresAuth"/>
     <v-main>
         <router-view/>
     </v-main>
