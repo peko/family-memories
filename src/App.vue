@@ -2,7 +2,7 @@
   <v-app class="bg">
     <AppBar v-if="$route.meta && $route.meta.requiresAuth"/>
     <v-main>
-        <router-view/>
+        <keep-alive><router-view/></keep-alive>
     </v-main>
   </v-app>
 </template>

@@ -7,7 +7,7 @@
         <h2 class="d-none d-sm-inline">Family Memories</h2>
       </div>
       -->
-      <v-btn to="/create-memory" color="primary" text class="mr-2">create memory</v-btn>
+      <v-btn to="/create-memory" color="primary" text class="mr-2">create a memory</v-btn>
       <v-btn to="/all-memories" color="primary" text class="mr-2">all memories</v-btn>
       <v-btn disabled color="primary" text class="mr-2">about us</v-btn>
       <v-spacer></v-spacer>

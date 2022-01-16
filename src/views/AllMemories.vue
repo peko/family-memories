@@ -6,7 +6,7 @@
       </v-col> 
     </v-row>
     <v-row>
-        <VideoCard v-for="video in videos" :key="video.id" :video="video" />
+        <VideoCard v-for="video in videos" :key="video.id" :video="video" @delete="deleteVideo(video)"/>
     </v-row>
   </v-container>
 </template>
@@ -14,7 +14,7 @@
 <script>
 
 import VideoCard from "../components/VideoCard"
-import { getVideos } from "../firebase"
+import { getVideos, deleteVideo} from "../firebase"
 
 export default {
   name: 'AllMemories',
@@ -26,7 +26,16 @@ export default {
   data: () => ({
     videos:[]
   }),
-  mounted() {
+  methods: {
+      deleteVideo(video) {
+          let v = this.videos.indexOf(video);
+          console.log(v);
+          this.$delete(this.videos, v);
+          deleteVideo(video);
+      }
+  },
+  
+  activated() {
      getVideos()
      .then((videos)=>this.videos = videos)
   }

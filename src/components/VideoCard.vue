@@ -17,17 +17,22 @@
             </v-img -->
         </v-responsive>
 
-        <v-card-subtitle class="pb-0">
-          {{video.question}}
-        </v-card-subtitle>
-
         <v-card-text class="text--primary">
-          <!-- div>{{video}}</div-->
+            {{video.question}}
+        </v-card-text>
+        <v-card-actions>
+            <v-spacer/>
+            <v-btn icon @click="$emit('delete')"><v-icon>mdi-delete</v-icon></v-btn>
+        </v-card-actions>
+        <!--
+        <v-card-text class="text--primary">
+          <div>{{video}}</div>
           <div>Stage: {{video.stage}}</div>
           <div>Focus on: {{video.focuson}}</div>
           <div>Mood: {{video.mood}}</div>
           <div>Years: {{video.yearfrom}}-{{video.yearto}}</div>
         </v-card-text>
+        -->
 
         <!-- v-card-actions>
           <v-btn color="primary" text > Play </v-btn>

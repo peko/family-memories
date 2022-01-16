@@ -2,7 +2,8 @@
   <v-container >
     <v-row align="center" justify="center">
       <v-col align="center">
-        <video ref="video" controls :poster="poster"/>
+        <video ref="video" controls :poster="poster">
+        </video>
       </v-col>
       <v-col v-show="false" align="center">
         <canvas ref="canvas"/>
@@ -12,9 +13,10 @@
       align="center"
       justify="center">
       <v-col align="center">
-          <v-btn v-if="!recording" @click="startRecording"><v-icon left color="primary">mdi-record</v-icon>start record</v-btn>
-          <v-btn v-if="recording" color="primary" @click="stopRecording" :loading="uploading"><v-icon left>mdi-stop</v-icon>stop recording</v-btn>
-          <template v-if="recorded">
+          <v-btn v-if="prerecord" x-large>{{timer? timer : 'Go!'}}</v-btn>
+          <v-btn v-if="!recording && !prerecord" x-large @click="prepareRecord"><v-icon left color="primary">mdi-record</v-icon>start record</v-btn>
+          <v-btn v-if="recording" color="primary" x-large @click="stopRecording" :loading="uploading"><v-icon left>mdi-stop</v-icon>stop recording {{Math.floor(stop_timer/60)}}:{{('0'+stop_timer%60).substr(-2)}}</v-btn>
+          <template v-if="false">
               <v-btn class="ml-4" @click="download"><v-icon left>mdi-download</v-icon>download</v-btn>
           </template>
           <v-btn v-if="false" color="primary" class="ml-4" disabled><v-icon left>mdi-upload</v-icon>upload file</v-btn>
@@ -52,33 +54,14 @@ export default {
         poster,
         recorded: false,
         recording: false,
+        prerecord: false,
+        timer: 3,
+        stop_timer: 60*3,
         uploading: false,
     }),
 
     methods: {
     
-        successCallback(stream) {
-
-            let video = this.$refs.video;
-            video.srcObject = stream;
-            video.volume = 0;
-            video.muted = true;
-            video.autoplay = true;
-            video.playsinline = true;
-
-            var options = {
-                mimeType: 'video/webm;codecs=vp9,opus',
-                //videoBitsPerSecond: 51200000,
-                videoBitsPerSecond: 5120000,
-                audioBitsPerSecond: 128000,
-                timeSlice:1000,
-            };
-            
-            this.stream = stream;
-            recorder = Recorder(stream, options);
-            recorder.startRecording();
-            //this.toggleControls();
-        },
 
         errorCallback() {
             //handle error here
@@ -87,11 +70,11 @@ export default {
         processVideo(videoURL) {
             console.log(videoURL);
 
-            let video = this.$refs.video;
-            video.src = video.srcObject = null;
-            video.muted = false;
-            video.volume = 1;
-            video.src = videoURL;
+            // let video = this.$refs.video;
+            // video.src = video.srcObject = null;
+            // video.muted = false;
+            // video.volume = 1;
+            // video.src = videoURL;
             
             this.uploadVideo(recorder.getBlob());
             this.destroyRecorder();
@@ -105,39 +88,98 @@ export default {
             // recorder.destroy();
             // recorder = null;
         },
-
-        startRecording() {
-            this.recording = true;
-            this.poster="";
+        
+        startCamera() {
             let mediaConstraints = {
                 video: {
                     mandatory: {
-                        minWidth: 640,
-                        minHeight: 480
+                        // minWidth: 640,
+                        // minHeight: 480,
+                        maxWidth: 1280,
+                        maxHeight: 720,
                     }
                 }, audio: true
             };
-            const uid = userUid();
-            this.filename = `${uid}/${+new Date}`;
-            setTimeout(this.makeScreenshot, 5000);
+            
             navigator.mediaDevices
             .getUserMedia(mediaConstraints)
             .then(this.successCallback.bind(this), this.errorCallback.bind(this));
         },
 
-        stopRecording() {
-        
-            this.poster = "";
-            
-            recorder.stopRecording(this.processVideo.bind(this));
+        stopCamera() {
+            // Stop stream
             this.stream.getAudioTracks().forEach(track => track.stop());
             this.stream.getVideoTracks().forEach(track => track.stop());
+        },
+
+        successCallback(stream) {
+
+            let video = this.$refs.video;
+            video.srcObject = stream;
+            video.volume = 0;
+            video.muted = true;
+            video.autoplay = true;
+            video.playsinline = true;
+            
+            this.stream = stream;
+        },
+
+        prepareRecord() {
+            this.prerecord = true;
+            this.timer = 3;
+            let int = setInterval(()=>{
+                this.timer -= 1;
+                if(this.timer<0) {
+                    clearInterval(int);
+                    this.prerecord = false;
+                    this.startRecording();
+                }
+            }, 1200)
+        },
+        
+        startRecording() {
+            const uid = userUid();
+            this.filename = `${uid}/${+new Date}`;
+            this.recording = true;
+            this.prerecord = false;
+            this.poster="";
+            var options = {
+                mimeType: 'video/webm;codecs=vp9,opus',
+                //videoBitsPerSecond: 51200000,
+                videoBitsPerSecond: 5120000,
+                audioBitsPerSecond: 128000,
+                timeSlice:1000,
+            };
+
+            recorder = Recorder(this.stream, options);
+            recorder.startRecording();
+            //this.toggleControls();
+
+            setTimeout(this.makeScreenshot, 3000);
+            this.stop_timer = 60*3;
+            let countdown = ()=> {
+                if (!this.recording) return;
+                if(--this.stop_timer>0) {
+                    setTimeout(countdown, 1000)
+                } else {
+                    this.stopRecording();
+                }
+            }
+            countdown();
+        },
+        
+        stopRecording() {
+            // this.poster = "";
+            recorder.stopRecording(this.processVideo.bind(this));
+            // Stop stream
+            // this.stream.getAudioTracks().forEach(track => track.stop());
+            // this.stream.getVideoTracks().forEach(track => track.stop());
         },
 
         download() {
             recorder.save(`${this.filename}.webm`);
         },
-        
+
         uploadVideo(blob) {
         
             console.log("Upload Video");
@@ -151,7 +193,7 @@ export default {
                 console.log("Video uploaded")
                 this.uploading = false;
                 this.recording = false;
-                this.recorded = true;
+                this.recorded  = true;
                 return getDownloadURL(snapshot.ref)
             }).then((videoUrl)=>{
                 console.log(videoUrl);
@@ -189,16 +231,32 @@ export default {
                     getDownloadURL(snapshot.ref).then((url)=>this.thumbnailUrl=url);
                 }, "image/png");
             });
-        }
+        },
         
     },
         
-    mounted: function () {
+    activated() {
+       console.log("activated")
        let video = this.$refs.video;
        video.muted = false;
        video.controls = true;
        video.autoplay = false;
-    }};
+       this.startCamera();
+    },
+    
+    deactivated() {
+        console.log("deactivated")
+        if(this.recording) this.stopRecording();
+        this.stopCamera();
+    },
+    /* 
+    watch: {
+       '$route'(before, after) {
+           console.log(before,after);
+       }
+    }
+    */
+};
 
 </script>
 

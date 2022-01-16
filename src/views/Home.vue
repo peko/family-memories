@@ -8,7 +8,7 @@
     <v-row>
       <v-col xs="12" sm="6" md="4" lg="3">
         <v-btn block disabled color="primary" class="mt-10 mb-10"> Invite family member</v-btn>
-        <v-btn to="/create-memory" block color="primary" class="mt-10 mb-10"> Create memory </v-btn>
+        <v-btn to="/create-memory" block color="primary" class="mt-10 mb-10"> Create a memory </v-btn>
         <v-btn to="/all-memories" block color="primary" class="mt-10 mb-10"> All memories </v-btn>
       </v-col>
       <v-col class="family" xs="12" sm="6" md="8" lg="9">

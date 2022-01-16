@@ -2,7 +2,7 @@
   <v-container >
     <v-row>
       <v-col class="text-h3 primary-text mt-10">
-        {{uname}}: Create memory
+        {{uname}}: Create a memory
       </v-col> 
     </v-row>
     <v-row justify="center" align="center">
@@ -13,7 +13,7 @@
         </v-col>
 
         <v-col cols="8" class="text-center" >
-            {{question}}
+            <span class="text-h4" style="color:black !important;">{{question}}</span>
         </v-col>
         <v-col cols="1">
             <v-btn icon color="primary" @click="nextQuestion">
@@ -24,8 +24,10 @@
            <v-btn color="primary">Pick up a question</v-btn>
         </v-col>
     </v-row>
+
+    <!--
     <v-row>
-        
+
         <v-col>
             <v-combobox
                 v-model="stage"
@@ -73,6 +75,8 @@
               label="to"/>
         </v-col>
     </v-row>
+    -->
+
      <v-tabs
         fixed-tabs
       >
@@ -105,10 +109,37 @@
 import {userName} from "../firebase"
 import VideoRecorder from "../components/VideoRecorder"
 
-let questions = 
-`What is one of the strangest things that has ever happened to you?
-Another question #2?
-Another question #3?`.split('\n');
+let questions =
+`Describe yourself in 6 words.
+How did you choose what to do in life?
+What’s your hobby?
+What is your favourite book?
+What’s your favourite movie?
+Who is your favourite singer?
+What is your favourite music style?
+What’s your favorite food?
+What does your ideal day look like?
+How do you like to spend your vacation?
+What was your Mom like?
+What was your Dad like?
+What was your Grandma like?
+What was your Grandpa like?
+Who is your best friend and why?
+Who was your best boss and why?
+Who was your best mentor and why?
+Who is the family member the closest to you?
+Describe your family in 6 words.
+How would you describe your relationship with your kids?
+What was the happiest time of your life and why?
+What were the events that were pivotal in your life?
+What was the best (one of the best) day of your life?
+What was the toughest period of your life?
+When you think about your childhood, what are the first things that come to your mind?
+Who was the first person you fell in love with?
+How did you decide to get married?
+Tell me about your wedding day?
+What was your best workplace and why?
+How did you feel when your baby was born?`.split('\n');
 let qid=0, ql = questions.length;
 
 export default {
@@ -120,31 +151,28 @@ export default {
 
   data: () => ({
      items1: [
-         "Stage",
          "Birth",
          "School",
-         "Univercity",
+         "University",
          "Wedding"
      ],
-     stage: "Stage",
+     stage: "Birth",
      question: questions[qid],
      items2: [
-         "Focus on",
          "Me",
          "Family Member 1",
          "Family Member 2",
          "Label"
      ],
-     focuson: "Focus on",
+     focuson: "Me",
      
      items3: [
-         "Mood",
          "Happy",
          "Neutral",
          "Excited",
          "Sad",
      ],
-     mood: "Mood",
+     mood: "Happy",
      yearfrom:"",
      yearto:""
   }),
